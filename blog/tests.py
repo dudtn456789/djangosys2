@@ -44,8 +44,8 @@ class TestView(TestCase):
         self.assertEqual(response.status_code, 200)
         # 3.3 메인 영역에 포스트 2개의 타이틀이 존재한다
         main_area = soup.find('div', id='main-area')
-        self.assertIn('post_001.title', main_area.text)
-        self.assertIn('post_002.title', main_area.text)
+        self.assertIn(post_001.title, main_area.text)
+        self.assertIn(post_002.title, main_area.text)
         # 3.4 '아직 게시물이 없습니다'라는 문구가 더 이상 보이지 않는다
-        self.assertIn('아직 게시물이 없습니다', main_area.text)
+        self.assertNotIn('아직 게시물이 없습니다.', main_area.text)
         
