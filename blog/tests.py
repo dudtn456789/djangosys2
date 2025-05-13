@@ -1,10 +1,13 @@
 from django.test import TestCase, Client
 from bs4 import BeautifulSoup
 from .models import Post
+from django.contrib.auth.models import User
 # Create your tests here.
 class TestView(TestCase):
     def setUp(self):
         self.client = Client()
+        self.user_trump = User.objects.create_user(username='trump', password='somepassword')
+        self.user_obama = User.objects.create_user(username='obama', password='somepassword')
 
     def navbar_test(self, soup):
         navbar = soup.nav
@@ -49,12 +52,14 @@ class TestView(TestCase):
         post_001 = Post.objects.create(
             title="첫 번째 포스트입니다.",
             content = "Hello World. We are the world",
+            author=self.user_trump
         )
         self.assertEqual(Post.objects.count(), 1)
  
         post_002 = Post.objects.create(
             title="두 번째 포스트입니다.",
             content = "1등이 전부는 아니잖아요?",
+            author=self.user_obama
         )
         self.assertEqual(Post.objects.count(), 2)
         # 3.2 포스트 목록 페이지를 새로고침했을 때
@@ -68,6 +73,9 @@ class TestView(TestCase):
         # 3.4 '아직 게시물이 없습니다'라는 문구가 더 이상 보이지 않는다
         self.assertNotIn('아직 게시물이 없습니다.', main_area.text)
         
+        self.assertIn(self.user_trump.username.upper(), main_area.text)
+        self.assertIn(self.user_obama.username.upper(), main_area.text)
+
     def test_post_detail(self):
         #1.1. Post가 하나 있다
         post_001 = Post.objects.create(
