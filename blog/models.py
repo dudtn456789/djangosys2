@@ -11,6 +11,7 @@ class Tag(models.Model):
     
     def get_absolute_url(self):
         return f'/blog/tag/{self.slug}/'
+    
 # Create your models here.
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True)
